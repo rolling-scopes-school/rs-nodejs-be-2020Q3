@@ -1,10 +1,5 @@
 import { promises as fsp } from 'fs';
-
-type ItemType = {
-  id: string;
-  title: string;
-  complete: boolean;
-}
+import { ItemType } from '../types/item';
 
 const fileName = 'items.json';
 

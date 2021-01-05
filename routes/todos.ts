@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { Router } from 'express';
-import * as storage from '../storage/fs';
+import * as storage from '../storage/mongo';
 
 const router = Router();
 
