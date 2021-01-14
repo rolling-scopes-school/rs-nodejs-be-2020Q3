@@ -1,19 +1,7 @@
-import * as initKnex from 'knex';
 import { ItemType } from '../types/item';
+import { knex } from '../db/postgre';
 
-const { PG_USERNAME, PG_PASSWORD, PG_HOST } = process.env;
-
-const dbName = 'test';
 const tableName = 'todos';
-
-const url = process.env.DATABASE_URL
-  ?? `postgres://${PG_USERNAME}:${PG_PASSWORD}@${PG_HOST}/${dbName}`;
-
-const knex = initKnex({
-  client: 'pg',
-  connection: url,
-  debug: true
-});
 
 const listAll = async () => {
   return knex(tableName)
