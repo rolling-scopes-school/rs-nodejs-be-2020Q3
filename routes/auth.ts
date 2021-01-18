@@ -2,13 +2,12 @@ import { v4 as uuid } from 'uuid';
 import * as md5 from 'md5'
 import { Router } from 'express';
 import { knex } from '../db/postgre';
+import { sessionTable, userTable } from '../constants';
+import { authMw } from '../middleware/authMw';
 
 const { PG_SALT } = process.env;
 
 const router = Router();
-
-const sessionTable = 'sessions';
-const userTable = 'users';
 
 const getPasswordHash = (password: string) => {
   return md5(password + PG_SALT);
@@ -104,18 +103,9 @@ router.post('/register', async (req, res, next) => {
   res.json(response);
 });
 
-router.post('/test', async (req, res, next) => {
-  const token = req.header('authorization');
-
-  const [session] = await knex(sessionTable)
-    .select()
-    .where({ token })
-
-  const statusCode = session && new Date(session.expiresAt).getTime() > Date.now()
-   ? 200 : 403;
-
-  res.json({
-    statusCode,
+router.post('/test', authMw, async (req, res, next) => {
+  res.status(200).json({
+    statusCode: 200,
   });
 });
 
