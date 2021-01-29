@@ -1,16 +1,26 @@
+import * as http from 'http';
+
 import * as express from 'express';
+import * as expressWs from 'express-ws';
+
 import * as logger from 'morgan';
 import * as cors from 'cors';
 import authRouter from './routes/auth';
 import todoRouter from './routes/todos';
+import getWsRouter from './routes/webSocket';
 
 const app = express();
+
+const server = http.createServer(app);
+
+expressWs(app, server);
 
 app.use(logger('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use('/ws', getWsRouter());
 app.use('/auth', authRouter);
 app.use('/todos', todoRouter);
 
@@ -30,4 +40,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-export default app;
+export {
+  app,
+  server
+};

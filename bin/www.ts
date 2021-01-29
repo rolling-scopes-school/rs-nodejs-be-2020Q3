@@ -1,21 +1,14 @@
 /**
  * Module dependencies.
  */
-import app from '../app';
+import { server, app } from '../app';
 import debug0 from 'debug';
-import * as http from 'http';
-
 const debug = debug0('rs-demo-be:server');
 /**
  * Get port from environment and store in Express.
  */
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -83,4 +76,14 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+}
+
+if (process.env.USE_PROXY) {
+  const globalAgent = require('global-agent');
+
+  process.env.GLOBAL_AGENT_HTTP_PROXY = process.env.USE_PROXY;
+  process.env.GLOBAL_AGENT_HTTPS_PROXY = process.env.USE_PROXY;
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+  globalAgent.bootstrap();
 }
